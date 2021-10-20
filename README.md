@@ -1,0 +1,2 @@
+# QtMicaSenseLib
+基于Qt平台下的MicaSense多光谱驱动程序实例
