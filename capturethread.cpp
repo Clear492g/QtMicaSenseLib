@@ -1,4 +1,4 @@
-﻿#include "capturethread.h"
+#include "capturethread.h"
 
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8")
@@ -6,6 +6,7 @@
 
 CaptureThread::CaptureThread(QString url, MicasenseConfig conf): conf(conf)
 {
+    IsCapturing = false;
     cli = new MyClient(url.toStdString(), 80);
     cli->set_timeout_sec(12);
     cli->set_keep_alive_max_count(10);
@@ -34,6 +35,10 @@ QString CaptureThread::now()
 
 void CaptureThread::capture()//给命令曝光
 {
+    if(IsCapturing)
+    {return;}
+    IsCapturing=true;
+
     mutex.lock();
     QString CMD = "/capture?&block=true&cache_raw="+QString::number(conf.cache_raw)+"&store_capture" + conf.store_capture
                   + "&preview" + conf.preview + "&anti_sat" + conf.anti_sat;
@@ -70,6 +75,7 @@ void CaptureThread::capture()//给命令曝光
         emit this->AddDownloadTask(name, key, datetime.toString("yyyy_MM_dd_hh_mm_ss_zzz"));
     }
     mutex.unlock();
+    IsCapturing=false;
 }
 
 void CaptureThread::TimerCaptureSlot()
