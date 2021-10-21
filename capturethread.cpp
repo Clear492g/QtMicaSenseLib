@@ -55,6 +55,7 @@ void CaptureThread::capture()//给命令曝光
     if(rejson["status"] != "complete")
     {
         throw  MyException("Capture not finished ", 800);
+        return;
     }
 
     QList<QString> keys = rejson["raw_cache_path"].toMap().keys();
